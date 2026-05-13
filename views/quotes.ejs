@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+<section class="panel">
+  <h2>Alıntılar</h2>
+  <div class="quote-list">
+    <% quotes.forEach(q => { const book = getBook(q.bookId); %>
+      <blockquote>
+        “<%= q.text %>”
+        <small>— <%= book.title %>, <%= getUser(q.userId)?.name %> · ♥ <%= q.likes %></small>
+      </blockquote>
+    <% }) %>
+  </div>
+</section>
+<%- include('partials/footer') %>

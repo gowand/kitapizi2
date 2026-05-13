@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<section class="panel">
+  <div class="section-title">
+    <h2>Kitap Tahlil Günleri</h2>
+    <span class="pill">Takvim + kontenjan + davetiye sistemi</span>
+  </div>
+
+  <% analyses.forEach(a => { const book = getBook(a.bookId); const total = a.normalCapacity + a.inviteCapacity + a.rewardCapacity; %>
+    <div class="analysis-card">
+      <img src="<%= book.cover %>" alt="">
+      <div>
+        <h3><%= a.title %></h3>
+        <p><%= book.author %></p>
+        <p><b><%= a.date %></b> · <b><%= a.time %></b></p>
+        <div class="capacity">
+          <span>Normal: <%= a.normalCapacity %></span>
+          <span>Davetiye: <%= a.inviteCapacity %></span>
+          <span>Ödül: <%= a.rewardCapacity %></span>
+          <span>Toplam: <%= total %></span>
+        </div>
+      </div>
+      <a class="btn" href="/analysis/<%= a.id %>">Detaylar</a>
+    </div>
+  <% }) %>
+</section>
+<%- include('../partials/footer') %>

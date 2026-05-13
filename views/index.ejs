@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Eski kitaplık kokusunda dijital topluluk</p>
+    <h2 class="typewriter"><%= siteSettings.heroQuote || "Her kitap, başka bir hayatın kapısını aralar." %></h2>
+    <p><%= siteSettings.heroSubtitle || "Kitapları keşfet, alıntılarını paylaş, tahlil günlerine katıl ve okuma yolculuğunu rozetlerle büyüt." %></p>
+    <a class="btn" href="/books">Kitapları Keşfet</a>
+    <a class="btn ghost" href="/analysis">Tahlil Günleri</a>
+  </div>
+</section>
+
+<div class="stats-grid">
+  <div class="stat"><b><%= db.users.length %></b><span>Üye</span></div>
+  <div class="stat"><b><%= db.books.length %></b><span>Kitap</span></div>
+  <div class="stat"><b><%= db.comments.length %></b><span>Yorum</span></div>
+  <div class="stat"><b><%= db.quotes.length %></b><span>Alıntı</span></div>
+  <div class="stat"><b><%= db.analyses.length %></b><span>Tahlil</span></div>
+  <div class="stat"><b><%= db.siteStats.totalVisits %></b><span>Toplam Ziyaret</span></div>
+  <div class="stat"><b><%= db.siteStats.todayVisits %></b><span>Bugünkü Ziyaret</span></div>
+</div>
+
+<section class="panel">
+  <div class="section-title">
+    <h3>Öne Çıkan Kitaplar</h3>
+    <a href="/books">Tümünü Gör</a>
+  </div>
+  <div class="book-grid">
+    <% db.books.slice(0,5).forEach(book => { %>
+      <a class="book-card" href="/books/<%= book.id %>">
+        <img src="<%= book.cover %>" alt="">
+        <b><%= book.title %></b>
+        <span><%= book.author %></span>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="panel daily-quote-panel">
+    <h3>Bugünün Alıntısı</h3>
+    <% if (dailyQuote) { const dqBook = getBook(dailyQuote.bookId); %>
+      <blockquote>“<%= dailyQuote.text %>” <small>— <%= dqBook?.title %></small></blockquote>
+      <p class="muted">Bu alıntı her gün otomatik değişir.</p>
+    <% } %>
+  </div>
+  <div class="panel">
+    <h3>Yaklaşan Tahliller</h3>
+    <% db.analyses.forEach(a => { const book = getBook(a.bookId); %>
+      <div class="list-row">
+        <div>
+          <b><%= a.title %></b>
+          <span><%= a.date %> · <%= a.time %> · Kontenjan: <%= a.normalCapacity + a.inviteCapacity + a.rewardCapacity %></span>
+        </div>
+        <a class="mini-btn" href="/analysis/<%= a.id %>">Detay</a>
+      </div>
+    <% }) %>
+  </div>
+  <div class="panel">
+    <h3>Günün Alıntıları</h3>
+    <% visibleQuotes(db).slice(0,3).forEach(q => { const book = getBook(q.bookId); %>
+      <blockquote>“<%= q.text %>” <small>— <%= book.title %></small></blockquote>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

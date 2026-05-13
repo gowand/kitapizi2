@@ -1,0 +1,118 @@
+<%- include('../partials/header') %>
+<% const book = getBook(analysis.bookId); const total = analysis.normalCapacity + analysis.inviteCapacity + analysis.rewardCapacity; %>
+
+<section class="panel analysis-hero">
+  <img src="<%= book.cover %>">
+  <div>
+    <p class="eyebrow">Kitap Tahlil Odası</p>
+    <h2><%= analysis.title %></h2>
+    <p><%= book.author %> · <%= analysis.date %> · <%= analysis.time %></p>
+    <div class="capacity">
+      <span>Katılım: <%= analysis.applications.filter(a=>a.status==='APPROVED').length + analysis.invites.length + analysis.rewardAccess.length %> / <%= total %></span>
+      <span>Normal: <%= analysis.normalCapacity %></span>
+      <span>Davetiye: <%= analysis.inviteCapacity %></span>
+      <span>Ödül: <%= analysis.rewardCapacity %></span>
+    </div>
+
+    <% if (state === 'WAITING') { %>
+      <div class="countdown" data-start="<%= analysis.date %>T<%= analysis.time %>:00">Tahlile kalan süre hesaplanıyor...</div>
+
+      <% if (currentUser) { const progress = userTaskProgress(currentUser); %>
+        <div class="task-box">
+          <h4>Görevle Katılım Hakkı</h4>
+          <p>Bu tahlile başvuru beklemeden katılmak için görevleri tamamlayabilirsin.</p>
+          <div class="capacity">
+            <span class="<%= progress.readsOk?'ok':'' %>">Kitap: <%= currentUser.readCount %>/<%= progress.readsTarget %></span>
+            <span class="<%= progress.commentsOk?'ok':'' %>">Yorum: <%= currentUser.commentCount %>/<%= progress.commentsTarget %></span>
+            <span class="<%= progress.quotesOk?'ok':'' %>">Alıntı: <%= currentUser.quoteCount %>/<%= progress.quotesTarget %></span>
+          </div>
+        </div>
+
+        <div class="inline-actions">
+          <form method="post" action="/analysis/<%= analysis.id %>/apply">
+            <button>Katılım Talebi Gönder</button>
+          </form>
+
+          <% if (canUserSelfJoinAnalysis(analysis, currentUser)) { %>
+            <form method="post" action="/analysis/<%= analysis.id %>/self-join">
+              <button>Görev Hakkımla Katıl</button>
+            </form>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+
+    <% if (state === 'FINISHED') { %>
+      <a class="btn" href="/analysis/<%= analysis.id %>/report">Tahlil Raporunu Gör</a>
+    <% } %>
+  </div>
+</section>
+
+<% if (state === 'LIVE') { %>
+  <% const activeTable = analysis.tables[activeIndex]; %>
+  <section class="workshop">
+    <aside class="table-list">
+      <h3>Masalar</h3>
+      <% analysis.tables.forEach((t, i) => { %>
+        <div class="table-step <%= i===activeIndex?'active':'' %>">
+          <span><%= i+1 %></span>
+          <b><%= t.title %></b>
+          <small><%= analysis.durationPerTable %> dk</small>
+        </div>
+      <% }) %>
+    </aside>
+
+    <div class="panel live-room">
+      <div class="section-title">
+        <h2>Masa <%= activeIndex + 1 %> / <%= analysis.tables.length %> - <%= activeTable.title %></h2>
+        <span class="timer">Canlı</span>
+      </div>
+      <p class="question"><%= activeTable.question %></p>
+
+      <div class="responses">
+        <% analysis.responses.filter(r => r.tableId === activeTable.id).forEach(r => { %>
+          <div class="comment">
+            <b><%= getUser(r.userId)?.avatar %> <%= getUser(r.userId)?.name %></b>
+            <p><%= r.text %></p>
+          </div>
+        <% }) %>
+      </div>
+
+      <% if (approved) { %>
+        <form method="post" action="/analysis/<%= analysis.id %>/respond" class="stack-form">
+          <textarea name="text" required placeholder="Bu masa için fikrini yaz..."></textarea>
+          <button>Gönder</button>
+        </form>
+      <% } else { %>
+        <div class="alert error">Bu canlı tahlile yazmak için onaylı katılımcı, davetli veya ödül erişimli olmalısınız.</div>
+      <% } %>
+    </div>
+
+    <aside class="participants">
+      <h3>Katılımcılar</h3>
+      <% analysis.applications.filter(a=>a.status==='APPROVED').forEach(a => { const u = getUser(a.userId); %>
+        <span class="pill"><%= u?.avatar %> <%= u?.name %></span>
+      <% }) %>
+      <% analysis.invites.forEach(i => { const u = getUser(i.userId); %>
+        <span class="pill">🎟 <%= u?.name %></span>
+      <% }) %>
+      <% analysis.rewardAccess.forEach(i => { const u = getUser(i.userId); %>
+        <span class="pill">🏆 <%= u?.name %></span>
+      <% }) %>
+    </aside>
+  </section>
+<% } %>
+
+<section class="panel">
+  <h3>Masa Başlıkları</h3>
+  <div class="grid-2">
+    <% analysis.tables.forEach((t, i) => { %>
+      <div class="paper-card">
+        <b><%= i+1 %>. <%= t.title %></b>
+        <p><%= t.question %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

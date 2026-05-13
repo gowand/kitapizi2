@@ -1,0 +1,31 @@
+{
+  "name": "kitapizi",
+  "version": "1.0.0",
+  "description": "Nostaljik kitap tanıtım, alıntı ve kitap tahlil platformu",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "db:seed-from-json": "node scripts/seed-from-json.js",
+    "setup:db": "npx prisma generate && npx prisma migrate dev --name init && npm run db:seed-from-json"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1",
+    "@prisma/client": "^5.22.0",
+    "connect-pg-simple": "^9.0.1",
+    "dotenv": "^16.4.7",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}

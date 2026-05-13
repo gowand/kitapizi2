@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+<% const book = getBook(analysis.bookId); %>
+<section class="report panel">
+  <h1><%= analysis.title %> Raporu</h1>
+  <p><b>Tarih:</b> <%= analysis.date %> · <b>Kitap:</b> <%= book.title %> · <b>Yazar:</b> <%= book.author %></p>
+  <p><b>Katılımcı:</b> <%= analysis.applications.filter(a=>a.status==='APPROVED').length + analysis.invites.length + analysis.rewardAccess.length %> · <b>Toplam Yorum:</b> <%= analysis.responses.length %></p>
+
+  <% analysis.tables.forEach((t, i) => { %>
+    <section class="paper-card">
+      <h3><%= i+1 %>. <%= t.title %></h3>
+      <p class="muted"><%= t.question %></p>
+      <% const rows = analysis.responses.filter(r => r.tableId === t.id); %>
+      <% if (!rows.length) { %><p>Bu masada henüz değerlendirme yok.</p><% } %>
+      <% rows.forEach(r => { %>
+        <blockquote>“<%= r.text %>” <small>— <%= getUser(r.userId)?.name %></small></blockquote>
+      <% }) %>
+    </section>
+  <% }) %>
+  <button onclick="window.print()">PDF olarak yazdır / indir</button>
+</section>
+<%- include('../partials/footer') %>

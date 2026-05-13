@@ -1,0 +1,72 @@
+<%- include('../partials/header') %>
+<section class="panel">
+  <h2>Moderatör Paneli</h2>
+  <p class="muted">Yorum denetimi, uygunsuz içerik silme ve süper adminin verdiği aylık kota kadar kitap tahliline üye alma işlemleri.</p>
+  <% if (currentUser.role === 'MODERATOR') { %>
+    <div class="capacity">
+      <span>Yetki: <%= currentUser.moderatorCanApprove ? 'Açık' : 'Kapalı' %></span>
+      <span>Aylık Kota: <%= currentUser.moderatorMonthlyQuota || 0 %></span>
+      <span>Kullanılan: <%= currentUser.moderatorUsedQuota || 0 %></span>
+      <span>Kalan: <%= (currentUser.moderatorMonthlyQuota || 0) - (currentUser.moderatorUsedQuota || 0) %></span>
+    </div>
+  <% } %>
+</section>
+
+<section class="panel">
+  <h3>Kitap Tahlili Başvuruları</h3>
+  <% db.analyses.forEach(a => { %>
+    <div class="admin-analysis">
+      <h4><%= a.title %></h4>
+      <% a.applications.filter(ap => ap.status === 'PENDING').forEach(ap => { const u = getUser(ap.userId); const progress = userTaskProgress(u); %>
+        <div class="list-row">
+          <div>
+            <b><%= u?.avatar %> <%= u?.name %></b>
+            <span>Görev: Kitap <%= u?.readCount %>/<%= progress.readsTarget %>, Yorum <%= u?.commentCount %>/<%= progress.commentsTarget %>, Alıntı <%= u?.quoteCount %>/<%= progress.quotesTarget %></span>
+          </div>
+          <form method="post" action="/moderator/analysis/<%= a.id %>/application/<%= ap.userId %>" class="inline-form">
+            <button name="status" value="APPROVED">Kotamdan Kabul Et</button>
+            <button name="status" value="REJECTED">Reddet</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% }) %>
+</section>
+
+
+<section class="panel">
+  <h3>Alıntı Onay Merkezi</h3>
+  <p class="muted">Üyelerin gönderdiği alıntılar onaylanmadan sitede görünmez.</p>
+
+  <h4>Bekleyen Alıntılar</h4>
+  <% db.quotes.filter(q => q.status === 'PENDING').reverse().forEach(q => { const u = getUser(q.userId); const b = getBook(q.bookId); %>
+    <div class="quote-review">
+      <blockquote>“<%= q.text %>” <small><%= b?.title %> · <%= u?.name %></small></blockquote>
+      <% if (q.moderationNote) { %><div class="alert error"><%= q.moderationNote %></div><% } %>
+      <form method="post" action="/moderator/quote/<%= q.id %>/review" class="inline-form">
+        <input name="moderationNote" placeholder="İsteğe bağlı moderasyon notu">
+        <button name="status" value="APPROVED">Onayla</button>
+        <button name="status" value="REJECTED">Reddet</button>
+      </form>
+    </div>
+  <% }) %>
+
+  <h4>Son İncelenen Alıntılar</h4>
+  <% db.quotes.filter(q => q.status !== 'PENDING').slice().reverse().slice(0,10).forEach(q => { const u = getUser(q.userId); const b = getBook(q.bookId); %>
+    <div class="list-row">
+      <div><b><%= q.status %> · <%= b?.title %></b><span>“<%= q.text %>” — <%= u?.name %></span></div>
+      <form method="post" action="/moderator/quote/<%= q.id %>/delete"><button>Sil</button></form>
+    </div>
+  <% }) %>
+</section>
+
+<section class="panel">
+  <h3>Yorum Yönetimi</h3>
+  <% db.comments.slice().reverse().forEach(c => { %>
+    <div class="list-row">
+      <div><b><%= getUser(c.userId)?.name %></b><span><%= c.text %></span></div>
+      <form method="post" action="/moderator/comment/<%= c.id %>/delete"><button>Sil</button></form>
+    </div>
+  <% }) %>
+</section>
+<%- include('../partials/footer') %>

@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<section class="profile-card panel">
+  <div class="avatar"><%= user.avatar %></div>
+  <div>
+    <h2><%= user.name %></h2>
+    <p class="muted"><%= user.email %> · <%= user.role %></p>
+    <div class="stats-grid small">
+      <div class="stat"><b><%= user.readCount %></b><span>Okuduğu Kitap</span></div>
+      <div class="stat"><b><%= user.commentCount %></b><span>Yorum</span></div>
+      <div class="stat"><b><%= user.quoteCount %></b><span>Alıntı</span></div>
+      <div class="stat"><b><%= getBadges(user).length %></b><span>Rozet</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <h3>Rozetlerim</h3>
+  <div class="badge-grid">
+    <% getBadges(user).forEach(b => { %><span class="badge">🏅 <%= b %></span><% }) %>
+  </div>
+</section>
+
+<section class="panel">
+  <h3>Sanal Rafım</h3>
+  <div class="book-grid">
+    <% db.books.slice(0,5).forEach(book => { %>
+      <a class="book-card" href="/books/<%= book.id %>"><img src="<%= book.cover %>"><b><%= book.title %></b></a>
+    <% }) %>
+    <div class="book-card add">＋</div>
+  </div>
+</section>
+<%- include('partials/footer') %>

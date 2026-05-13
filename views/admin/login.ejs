@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+<section class="auth panel admin-login">
+  <h2>Yönetim Girişi</h2>
+  <p class="muted">Bu alan sadece Süper Admin ve Moderatör hesapları içindir.</p>
+  <form method="post" class="stack-form">
+    <input name="email" type="email" placeholder="Yönetim e-postası" required>
+    <input name="password" type="password" placeholder="Şifre" required>
+    <button>Yönetim Paneline Gir</button>
+  </form>
+  <p class="muted">Demo: admin@kitapizi.com / moderator@kitapizi.com — Şifre: admin123</p>
+  <a href="/login">Normal üye girişi</a>
+</section>
+<%- include('../partials/footer') %>

@@ -1,0 +1,7 @@
+<%- include('partials/header') %>
+<section class="panel danger-zone">
+  <h2>Hesabınız Banlandı</h2>
+  <p><b>Ban türü:</b> <%= user.ban?.type %></p>
+  <p><b>Sebep:</b> <%= user.ban?.reason %></p>
+</section>
+<%- include('partials/footer') %>

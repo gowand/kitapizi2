@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: kitapizi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kitapizi
+      POSTGRES_PASSWORD: kitapizi123
+      POSTGRES_DB: kitapizi
+    ports:
+      - "5432:5432"
+    volumes:
+      - kitapizi_pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: kitapizi-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  kitapizi_pgdata:

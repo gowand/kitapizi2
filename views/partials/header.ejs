@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitapİzi</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="page-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>Kitapİzi <span>🪶</span></h1>
+      <p><%= settings.siteSlogan || 'Her kitap, başka bir hayatın kapısını aralar.' %></p>
+    </div>
+    <nav>
+      <a href="/" class="<%= path==='/'?'active':'' %>">⌂ Ana Sayfa</a>
+      <a href="/books" class="<%= path.startsWith('/books')?'active':'' %>">▣ Kitaplar</a>
+      <a href="/quotes" class="<%= path==='/quotes'?'active':'' %>">❝ Alıntılar</a>
+      <a href="/community" class="<%= path==='/community'?'active':'' %>">☷ Topluluk</a>
+      <a href="/analysis" class="<%= path.startsWith('/analysis')?'active':'' %>">⏳ Kitap Tahlil Günleri</a>
+      <a href="/profile">☻ Profilim</a>
+      <% if (currentUser && currentUser.role === 'SUPER_ADMIN') { %>
+        <a href="/admin">⚙ Süper Admin Paneli</a>
+      <% } %>
+      <% if (currentUser && ['SUPER_ADMIN','MODERATOR'].includes(currentUser.role)) { %>
+        <a href="/moderator">🛡 Moderatör Paneli</a>
+      <% } %>
+      <% if (currentUser) { %>
+        <a href="/logout">⇥ Çıkış</a>
+      <% } else { %>
+        <a href="/login">☍ Üye Girişi</a>
+        <a href="/admin/login">⚙ Yönetim Girişi</a>
+      <% } %>
+    </nav>
+
+    <div class="quote-card">
+      <b>GÜNÜN ALINTISI</b>
+      <% if (dailyQuote) { const qBook = dailyQuote.book || getBook(dailyQuote.bookId); %>
+        <p>“<%= dailyQuote.text %>”</p>
+        <small>— <%= qBook?.title || 'Kitapİzi' %></small>
+      <% } else { %>
+        <p>“İnsan en çok, kendi içinde kaybolunca yeni bir sayfa açar.”</p>
+        <small>— Kitapİzi</small>
+      <% } %>
+    </div>
+
+    <div class="quote-card stats-mini">
+      <b>SİTE İSTATİSTİĞİ</b>
+      <p><strong><%= siteStats.totalVisits %></strong> toplam ziyaret</p>
+      <p><strong><%= siteStats.todayVisits %></strong> bugünkü ziyaret</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <strong>Kitapİzi</strong>
+        <span class="muted">Dijital eski kütüphane</span>
+      </div>
+      <div class="top-actions">
+        <% if (currentUser) { %>
+          <span class="pill"><%= currentUser.avatar %> <%= currentUser.name %> · <%= currentUser.role %></span>
+        <% } %>
+        <button class="theme-toggle fancy-theme" onclick="toggleTheme()" title="Gece / Gündüz"><span class="moon">🌙</span><span class="sun">☀️</span></button>
+      </div>
+    </header>
+
+    <% if (flashError && flashError.length) { %>
+      <div class="alert error"><%= flashError[0] %></div>
+    <% } %>
+    <% if (flashSuccess && flashSuccess.length) { %>
+      <div class="alert success"><%= flashSuccess[0] %></div>
+    <% } %>

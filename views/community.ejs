@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<section class="panel">
+  <h2>Topluluk</h2>
+  <p class="muted">Okurların yorumları, son alıntılar ve edebiyat tartışmaları burada toplanır.</p>
+  <div class="grid-2">
+    <div>
+      <h3>Son Yorumlar</h3>
+      <% db.comments.slice().reverse().forEach(c => { %>
+        <div class="comment"><b><%= getUser(c.userId)?.name %></b><p><%= c.text %></p></div>
+      <% }) %>
+    </div>
+    <div>
+      <h3>Aktif Okurlar</h3>
+      <% db.users.forEach(u => { %>
+        <div class="list-row"><div><b><%= u.avatar %> <%= u.name %></b><span><%= u.readCount %> kitap · <%= u.commentCount %> yorum</span></div><span class="pill"><%= u.role %></span></div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

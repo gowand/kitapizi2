@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<section class="book-detail panel">
+  <img class="detail-cover" src="<%= book.cover %>" alt="">
+  <div>
+    <h2><%= book.title %></h2>
+    <p class="muted"><%= book.author %> · <%= book.category %> · <%= book.year %> · <%= book.pages %> sayfa</p>
+    <p><%= book.description %></p>
+    <div class="status-buttons">
+      <% if (currentUser) { %>
+        <form method="post" action="/books/<%= book.id %>/read-status"><button name="status" value="read">Okudum</button></form>
+        <form method="post" action="/books/<%= book.id %>/read-status"><button name="status" value="reading">Okuyorum</button></form>
+        <form method="post" action="/books/<%= book.id %>/read-status"><button name="status" value="want">Okuyacağım</button></form>
+      <% } %>
+    </div>
+    <div class="stats-grid small">
+      <div class="stat"><b><%= book.stats.read %></b><span>Okudu</span></div>
+      <div class="stat"><b><%= book.stats.reading %></b><span>Okuyor</span></div>
+      <div class="stat"><b><%= book.stats.want %></b><span>Okuyacak</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="panel">
+    <h3>Öne Çıkan Alıntılar</h3>
+    <% quotes.forEach(q => { %>
+      <blockquote>“<%= q.text %>” <small>♥ <%= q.likes %> · <%= getUser(q.userId)?.name %></small></blockquote>
+    <% }) %>
+    <% if (currentUser) { %>
+      <form class="stack-form" method="post" action="/books/<%= book.id %>/quote">
+        <textarea name="text" required placeholder="Bu kitaptan bir alıntı paylaş..."></textarea>
+        <small class="muted">Alıntınız moderatör onayından sonra yayınlanır.</small><button>Alıntı Onaya Gönder</button>
+      </form>
+    <% } %>
+  </section>
+
+  <section class="panel">
+    <h3>Yorumlar</h3>
+    <% comments.forEach(c => { %>
+      <div class="comment">
+        <b><%= getUser(c.userId)?.avatar %> <%= getUser(c.userId)?.name %></b>
+        <p><%= c.text %></p>
+      </div>
+    <% }) %>
+    <% if (currentUser) { %>
+      <form class="stack-form" method="post" action="/books/<%= book.id %>/comment">
+        <textarea name="text" required placeholder="Kitap hakkındaki fikrini yaz..."></textarea>
+        <button>Yorum Yap</button>
+      </form>
+    <% } %>
+  </section>
+</div>
+
+<section class="panel">
+  <h3>Bu Kitaba Ait Tahliller</h3>
+  <% analyses.forEach(a => { %>
+    <div class="list-row">
+      <div><b><%= a.title %></b><span><%= a.date %> · <%= a.time %></span></div>
+      <a class="mini-btn" href="/analysis/<%= a.id %>">Tahlile Git</a>
+    </div>
+  <% }) %>
+</section>
+
+<%- include('../partials/footer') %>

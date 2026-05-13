@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+<section class="panel">
+  <div class="section-title">
+    <h2>Kitaplar</h2>
+    <form class="search-form" action="/books">
+      <input name="q" value="<%= q %>" placeholder="Kitap, yazar veya alıntı ara...">
+      <select name="category">
+        <option value="">Tüm Kategoriler</option>
+        <% categories.forEach(c => { %>
+          <option value="<%= c %>" <%= cat===c?'selected':'' %>><%= c %></option>
+        <% }) %>
+      </select>
+      <button>Ara</button>
+    </form>
+  </div>
+  <div class="book-grid large">
+    <% books.forEach(book => { %>
+      <a class="book-card" href="/books/<%= book.id %>">
+        <img src="<%= book.cover %>" alt="">
+        <b><%= book.title %></b>
+        <span><%= book.author %></span>
+        <small><%= book.category %></small>
+      </a>
+    <% }) %>
+  </div>
+</section>
+<%- include('../partials/footer') %>

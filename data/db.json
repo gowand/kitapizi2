@@ -1,0 +1,355 @@
+{
+  "users": [
+    {
+      "id": "u_admin",
+      "name": "Süper Admin",
+      "email": "admin@kitapizi.com",
+      "passwordHash": "$2a$10$c8TnUJxL0Bm7rJmMxdCQwe82K03tNg/sHNvcn0YqvUoQVT/aGuxzO",
+      "role": "SUPER_ADMIN",
+      "avatar": "🦉",
+      "readCount": 128,
+      "commentCount": 220,
+      "quoteCount": 85,
+      "badges": [
+        "Raf Ustası",
+        "Yorum Üstadı",
+        "Alıntı Avcısı"
+      ],
+      "status": "ACTIVE",
+      "mutedUntil": null,
+      "ban": null,
+      "createdAt": "2026-05-11T12:00:00.000Z",
+      "moderatorPowers": {
+        "canApproveAnalysis": true,
+        "monthlyAnalysisQuota": 9999,
+        "usedAnalysisQuota": 0
+      },
+      "tasks": {
+        "commentsTarget": 10,
+        "quotesTarget": 5,
+        "readsTarget": 3,
+        "completed": false,
+        "earnedAnalysisAccess": false
+      }
+    },
+    {
+      "id": "u_mod",
+      "name": "okur_muhafızı",
+      "email": "moderator@kitapizi.com",
+      "passwordHash": "$2a$10$c8TnUJxL0Bm7rJmMxdCQwe82K03tNg/sHNvcn0YqvUoQVT/aGuxzO",
+      "role": "MODERATOR",
+      "avatar": "🖋️",
+      "readCount": 56,
+      "commentCount": 130,
+      "quoteCount": 44,
+      "badges": [
+        "Kitap Kurdu",
+        "Saygılı Okur"
+      ],
+      "status": "ACTIVE",
+      "mutedUntil": null,
+      "ban": null,
+      "createdAt": "2026-05-11T12:00:00.000Z",
+      "moderatorPowers": {
+        "canApproveAnalysis": true,
+        "monthlyAnalysisQuota": 10,
+        "usedAnalysisQuota": 0
+      },
+      "tasks": {
+        "commentsTarget": 10,
+        "quotesTarget": 5,
+        "readsTarget": 3,
+        "completed": false,
+        "earnedAnalysisAccess": false
+      }
+    },
+    {
+      "id": "u_user",
+      "name": "okur_delisi",
+      "email": "user@kitapizi.com",
+      "passwordHash": "$2a$10$c8TnUJxL0Bm7rJmMxdCQwe82K03tNg/sHNvcn0YqvUoQVT/aGuxzO",
+      "role": "USER",
+      "avatar": "👩",
+      "readCount": 48,
+      "commentCount": 126,
+      "quoteCount": 75,
+      "badges": [
+        "Sayfa Yolcusu",
+        "Yorum Üstadı",
+        "Alıntı Avcısı"
+      ],
+      "status": "ACTIVE",
+      "mutedUntil": null,
+      "ban": null,
+      "createdAt": "2026-05-11T12:00:00.000Z",
+      "tasks": {
+        "commentsTarget": 10,
+        "quotesTarget": 5,
+        "readsTarget": 3,
+        "completed": false,
+        "earnedAnalysisAccess": false
+      }
+    }
+  ],
+  "books": [
+    {
+      "id": "b1",
+      "title": "Suç ve Ceza",
+      "author": "Fyodor Dostoyevski",
+      "category": "Roman",
+      "year": "1866",
+      "pages": "672",
+      "cover": "https://covers.openlibrary.org/b/id/8231856-L.jpg",
+      "description": "İnsanın vicdanı, suç, ceza ve ahlak üzerine derin bir klasik.",
+      "stats": {
+        "read": 5320,
+        "reading": 2450,
+        "want": 3170
+      }
+    },
+    {
+      "id": "b2",
+      "title": "1984",
+      "author": "George Orwell",
+      "category": "Distopya",
+      "year": "1949",
+      "pages": "352",
+      "cover": "https://covers.openlibrary.org/b/id/7222246-L.jpg",
+      "description": "Gözetim toplumu ve totaliter düzen üzerine unutulmaz bir roman.",
+      "stats": {
+        "read": 4820,
+        "reading": 1520,
+        "want": 2900
+      }
+    },
+    {
+      "id": "b3",
+      "title": "Simyacı",
+      "author": "Paulo Coelho",
+      "category": "Roman",
+      "year": "1988",
+      "pages": "184",
+      "cover": "https://covers.openlibrary.org/b/id/8100927-L.jpg",
+      "description": "Kişisel menkıbe, arayış ve yolculuk üzerine sade ama etkili bir anlatı.",
+      "stats": {
+        "read": 4200,
+        "reading": 900,
+        "want": 2100
+      }
+    },
+    {
+      "id": "b4",
+      "title": "Küçük Prens",
+      "author": "Antoine de Saint-Exupéry",
+      "category": "Çocuk / Felsefe",
+      "year": "1943",
+      "pages": "112",
+      "cover": "https://covers.openlibrary.org/b/id/240727-L.jpg",
+      "description": "Çocuklara ve yetişkinlere kalple bakmayı anlatan şiirsel bir eser.",
+      "stats": {
+        "read": 6100,
+        "reading": 980,
+        "want": 3300
+      }
+    },
+    {
+      "id": "b5",
+      "title": "Burun",
+      "author": "Nikolay Gogol",
+      "category": "Öykü",
+      "year": "1836",
+      "pages": "64",
+      "cover": "https://covers.openlibrary.org/b/id/10523338-L.jpg",
+      "description": "Kimlik, bürokrasi ve absürt gerçeklik üzerine Gogol'dan sıra dışı bir hikâye.",
+      "stats": {
+        "read": 1200,
+        "reading": 260,
+        "want": 880
+      }
+    }
+  ],
+  "quotes": [
+    {
+      "id": "q1",
+      "bookId": "b1",
+      "userId": "u_user",
+      "text": "İnsanın en büyük savaşı, kendi vicdanıyla olandır.",
+      "likes": 205,
+      "createdAt": "2026-05-11T13:00:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    },
+    {
+      "id": "q2",
+      "bookId": "b2",
+      "userId": "u_mod",
+      "text": "Büyük Birader seni izliyor.",
+      "likes": 98,
+      "createdAt": "2026-05-11T13:00:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    },
+    {
+      "id": "q3",
+      "bookId": "b3",
+      "userId": "u_user",
+      "text": "Bir şeyi gerçekten istersen, bütün evren onu gerçekleştirmek için işbirliği yapar.",
+      "likes": 126,
+      "createdAt": "2026-05-11T13:00:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    },
+    {
+      "id": "q4",
+      "bookId": "b4",
+      "userId": "u_admin",
+      "text": "Asıl önemli olan gözle görülmez.",
+      "likes": 188,
+      "createdAt": "2026-05-11T14:00:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    },
+    {
+      "id": "q5",
+      "bookId": "b5",
+      "userId": "u_mod",
+      "text": "İnsan bazen kendini kaybettiği yerde toplumun maskesini bulur.",
+      "likes": 75,
+      "createdAt": "2026-05-11T14:05:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    },
+    {
+      "id": "q6",
+      "bookId": "b1",
+      "userId": "u_user",
+      "text": "Acı ve ıstırap, büyük bir zekâ ve derin bir yürek için daima kaçınılmazdır.",
+      "likes": 143,
+      "createdAt": "2026-05-11T14:10:00.000Z",
+      "status": "APPROVED",
+      "moderationNote": "",
+      "reviewedBy": null,
+      "reviewedAt": null
+    }
+  ],
+  "comments": [
+    {
+      "id": "c1",
+      "bookId": "b1",
+      "userId": "u_user",
+      "text": "Raskolnikov'un iç çatışması kitabın en güçlü tarafı.",
+      "createdAt": "2026-05-11T13:10:00.000Z"
+    },
+    {
+      "id": "c2",
+      "bookId": "b2",
+      "userId": "u_mod",
+      "text": "Bugünün dijital gözetim dünyasına hâlâ çok yakın duruyor.",
+      "createdAt": "2026-05-11T13:12:00.000Z"
+    }
+  ],
+  "analyses": [
+    {
+      "id": "a1",
+      "bookId": "b5",
+      "title": "Gogol - Burun Tahlil Günü",
+      "date": "2026-05-15",
+      "time": "20:00",
+      "durationPerTable": 5,
+      "normalCapacity": 20,
+      "inviteCapacity": 5,
+      "rewardCapacity": 5,
+      "maxCapacity": 100,
+      "status": "SCHEDULED",
+      "minBadge": "Sayfa Yolcusu",
+      "minComments": 10,
+      "minReads": 5,
+      "allowApplications": true,
+      "allowInvites": true,
+      "allowRewards": true,
+      "tables": [
+        {
+          "id": "t1",
+          "title": "Karakter Analizi",
+          "question": "Kovalev karakteri sizce neyi temsil ediyor?"
+        },
+        {
+          "id": "t2",
+          "title": "Toplumsal Eleştiri",
+          "question": "Gogol bu eserinde toplumu hangi yönleriyle eleştiriyor?"
+        },
+        {
+          "id": "t3",
+          "title": "Sembolizm",
+          "question": "Burun metaforu neyi anlatıyor olabilir?"
+        },
+        {
+          "id": "t4",
+          "title": "Eksik Noktalar",
+          "question": "Kitapta eksik veya zayıf bulduğunuz yerler neler?"
+        },
+        {
+          "id": "t5",
+          "title": "Genel Yorum",
+          "question": "Kitap sizde nasıl bir iz bıraktı?"
+        }
+      ],
+      "applications": [
+        {
+          "userId": "u_user",
+          "type": "NORMAL",
+          "status": "APPROVED"
+        }
+      ],
+      "invites": [
+        {
+          "userId": "u_mod",
+          "status": "INVITED",
+          "note": "Özel davetiye"
+        }
+      ],
+      "rewardAccess": [],
+      "responses": [
+        {
+          "userId": "u_user",
+          "tableId": "t1",
+          "text": "Kovalev'in burnu, toplumdaki rütbe ve görünüş takıntısını temsil ediyor.",
+          "createdAt": "2026-05-11T13:30:00.000Z"
+        }
+      ],
+      "reportPublished": false,
+      "totalDuration": 25,
+      "autoClose": true
+    }
+  ],
+  "logs": [],
+  "siteStats": {
+    "totalVisits": 0,
+    "todayVisits": 0,
+    "lastVisitDate": "",
+    "bookPageViews": {},
+    "analysisPageViews": {},
+    "dailyQuoteId": null,
+    "dailyQuoteDate": ""
+  },
+  "siteSettings": {
+    "heroQuote": "Her kitap, başka bir hayatın kapısını aralar.",
+    "heroSubtitle": "Kitapları keşfet, alıntılarını paylaş, tahlil günlerine katıl ve okuma yolculuğunu rozetlerle büyüt."
+  },
+  "settings": {
+    "heroTitle": "Her kitap, başka bir hayatın kapısını aralar.",
+    "heroSubtitle": "Kitapları keşfet, alıntılarını paylaş, tahlil günlerine katıl ve okuma yolculuğunu rozetlerle büyüt.",
+    "siteSlogan": "Her kitap, başka bir hayatın kapısını aralar.",
+    "defaultTheme": "dark"
+  }
+}

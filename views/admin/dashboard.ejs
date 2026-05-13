@@ -1,0 +1,199 @@
+<%- include('../partials/header') %>
+<section class="panel">
+  <h2>Süper Admin Paneli</h2>
+  <div class="stats-grid">
+    <div class="stat"><b><%= db.users.length %></b><span>Kullanıcı</span></div>
+    <div class="stat"><b><%= db.books.length %></b><span>Kitap</span></div>
+    <div class="stat"><b><%= db.comments.length %></b><span>Yorum</span></div>
+    <div class="stat"><b><%= db.quotes.filter(q=>q.status==="APPROVED").length %></b><span>Onaylı Alıntı</span></div><div class="stat"><b><%= db.quotes.filter(q=>q.status==="PENDING").length %></b><span>Bekleyen Alıntı</span></div>
+    <div class="stat"><b><%= db.analyses.length %></b><span>Tahlil</span></div>
+    <div class="stat"><b><%= db.siteStats.totalVisits %></b><span>Toplam Ziyaret</span></div>
+    <div class="stat"><b><%= db.siteStats.todayVisits %></b><span>Bugünkü Ziyaret</span></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h3>Okuyucu ve Sayfa İstatistikleri</h3>
+  
+<section class="panel">
+  <h3>Ana Sayfa Yazı Ayarları</h3>
+  <p class="muted">Girişte görünen büyük sloganı ve açıklama yazısını buradan değiştirebilirsiniz.</p>
+  <form class="stack-form" method="post" action="/admin/settings">
+    <label>Büyük Slogan</label>
+    <input name="heroTitle" value="<%= settings.heroTitle || 'Her kitap, başka bir hayatın kapısını aralar.' %>" placeholder="Ana sayfa büyük sloganı">
+
+    <label>Açıklama Yazısı</label>
+    <textarea name="heroSubtitle" placeholder="Ana sayfa açıklama yazısı"><%= settings.heroSubtitle || '' %></textarea>
+
+    <label>Sol Menü Küçük Slogan</label>
+    <input name="siteSlogan" value="<%= settings.siteSlogan || 'Her kitap, başka bir hayatın kapısını aralar.' %>" placeholder="Sol menü sloganı">
+
+    <button>Yazıları Güncelle</button>
+  </form>
+</section>
+
+<div class="grid-2">
+    <div>
+      <h4>En Çok Görüntülenen Kitap Sayfaları</h4>
+      <% Object.entries(db.siteStats.bookPageViews || {}).sort((a,b)=>b[1]-a[1]).slice(0,5).forEach(([bookId, count]) => { const b = getBook(bookId); %>
+        <div class="list-row"><div><b><%= b?.title || bookId %></b><span>Kitap detay görüntülenmesi</span></div><span class="pill"><%= count %></span></div>
+      <% }) %>
+    </div>
+    <div>
+      <h4>En Çok Görüntülenen Tahlil Sayfaları</h4>
+      <% Object.entries(db.siteStats.analysisPageViews || {}).sort((a,b)=>b[1]-a[1]).slice(0,5).forEach(([analysisId, count]) => { const a = db.analyses.find(x=>x.id===analysisId); %>
+        <div class="list-row"><div><b><%= a?.title || analysisId %></b><span>Tahlil sayfası görüntülenmesi</span></div><span class="pill"><%= count %></span></div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <h3>Ana Sayfa Yazısı</h3>
+  <p class="muted">Girişte görünen büyük sözü ve alt açıklamayı buradan değiştirebilirsiniz.</p>
+  <form method="post" action="/admin/settings/hero" class="stack-form">
+    <input name="heroQuote" value="<%= db.siteSettings?.heroQuote || 'Her kitap, başka bir hayatın kapısını aralar.' %>" placeholder="Ana sayfa büyük sözü">
+    <textarea name="heroSubtitle" placeholder="Alt açıklama"><%= db.siteSettings?.heroSubtitle || '' %></textarea>
+    <button>Ana Sayfa Yazısını Güncelle</button>
+  </form>
+</section>
+
+<section class="panel parchment-note">
+  <h3>Yeni Yetki Mantığı</h3>
+  <p><b>Admin paneli girişi ayrıldı:</b> üyeler normal girişten, süper admin ve moderatörler yönetim girişinden girer.</p>
+  <p><b>Moderatör kotası:</b> Süper admin, moderatöre her ay kaç kişiyi kitap tahliline alabileceğini tanımlar.</p>
+  <p><b>Üye görevleri:</b> Üyeler belirlenen kitap okuma, yorum ve alıntı görevlerini tamamlayınca tahlile doğrudan katılım hakkı kazanabilir.</p>
+</section>
+
+<div class="grid-2">
+<section class="panel">
+  <h3>Yeni Kitap Ekle</h3>
+  <form class="stack-form" method="post" action="/admin/books">
+    <input name="title" placeholder="Kitap adı" required>
+    <input name="author" placeholder="Yazar" required>
+    <input name="category" placeholder="Kategori" required>
+    <input name="year" placeholder="Yayın yılı">
+    <input name="pages" placeholder="Sayfa sayısı">
+    <input name="cover" placeholder="Kapak görsel URL">
+    <textarea name="description" placeholder="Açıklama"></textarea>
+    <button>Kitap Ekle</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h3>Yeni Tahlil Oluştur</h3>
+  <form class="stack-form" method="post" action="/admin/analysis">
+    <input name="title" placeholder="Tahlil başlığı" required>
+    <select name="bookId">
+      <% db.books.forEach(b => { %><option value="<%= b.id %>"><%= b.title %> - <%= b.author %></option><% }) %>
+    </select>
+    <input type="date" name="date" required>
+    <input type="time" name="time" required>
+    <input type="number" name="durationPerTable" value="5" placeholder="Her masa süresi (dk)">
+    <input type="number" name="totalDuration" value="25" placeholder="Toplam tahlil süresi (dk)">
+    <label><input type="checkbox" name="autoClose" checked> Süre bitince tahlili otomatik kapat</label>
+    <input type="number" name="normalCapacity" value="20" placeholder="Normal kontenjan">
+    <input type="number" name="inviteCapacity" value="5" placeholder="Davetiye kontenjanı">
+    <input type="number" name="rewardCapacity" value="5" placeholder="Ödül kontenjanı">
+    <input type="number" name="maxCapacity" value="100" placeholder="Maksimum kontenjan">
+    <input name="minBadge" placeholder="Minimum rozet">
+    <input type="number" name="minComments" value="0" placeholder="Minimum yorum">
+    <input type="number" name="minReads" value="0" placeholder="Minimum okunan kitap">
+    <label><input type="checkbox" name="allowApplications" checked> Başvuru açık</label>
+    <label><input type="checkbox" name="allowInvites" checked> Davetiye açık</label>
+    <label><input type="checkbox" name="allowRewards" checked> Ödül erişimi açık</label>
+    <% ['Karakter Analizi','Toplumsal Eleştiri','Sembolizm','Eksik Noktalar','Genel Yorum'].forEach((t,i)=>{ %>
+      <input name="tableTitle" value="<%= t %>">
+      <input name="tableQuestion" value="<%= i===0?'Karakterler sizce neyi temsil ediyor?':i===1?'Eser toplumun hangi yönlerini eleştiriyor?':i===2?'Semboller ve metaforlar neler?':i===3?'Eksik veya zayıf kalan noktalar neler?':'Genel değerlendirmeniz nedir?' %>">
+    <% }) %>
+    <button>Tahlil Oluştur</button>
+  </form>
+</section>
+</div>
+
+<section class="panel">
+  <h3>Tahlil Yönetimi: Kontenjan, Davetiye, Ödül</h3>
+  <% db.analyses.forEach(a => { %>
+    <div class="admin-analysis">
+      <h4><%= a.title %></h4>
+      <form method="post" action="/admin/analysis/<%= a.id %>/time-settings" class="inline-form time-settings-form">
+        <input type="date" name="date" value="<%= a.date %>">
+        <input type="time" name="time" value="<%= a.time %>">
+        <input type="number" name="durationPerTable" value="<%= a.durationPerTable %>" title="Her masa süresi">
+        <input type="number" name="totalDuration" value="<%= a.totalDuration || (a.tables.length * a.durationPerTable) %>" title="Toplam tahlil süresi">
+        <label><input type="checkbox" name="autoClose" <%= a.autoClose !== false ? 'checked' : '' %>> Otomatik kapat</label>
+        <button>Süreyi Güncelle</button>
+      </form>
+
+      <form method="post" action="/admin/analysis/<%= a.id %>/capacity" class="inline-form">
+        <input type="number" name="normalCapacity" value="<%= a.normalCapacity %>">
+        <input type="number" name="inviteCapacity" value="<%= a.inviteCapacity %>">
+        <input type="number" name="rewardCapacity" value="<%= a.rewardCapacity %>">
+        <button>Kontenjanı Güncelle</button>
+      </form>
+
+      <div class="grid-2">
+        <form method="post" action="/admin/analysis/<%= a.id %>/invite" class="stack-form">
+          <b>Özel Davetiye Ver</b>
+          <select name="userId"><% db.users.forEach(u => { %><option value="<%= u.id %>"><%= u.name %></option><% }) %></select>
+          <input name="note" placeholder="Davetiye notu">
+          <button>Davetiye Gönder</button>
+        </form>
+        <form method="post" action="/admin/analysis/<%= a.id %>/reward" class="stack-form">
+          <b>Ödül Erişimi Ver</b>
+          <select name="userId"><% db.users.forEach(u => { %><option value="<%= u.id %>"><%= u.name %></option><% }) %></select>
+          <input name="reason" placeholder="Ödül sebebi">
+          <button>Ödül Tanımla</button>
+        </form>
+      </div>
+
+      <h5>Bekleyen Başvurular</h5>
+      <% a.applications.forEach(ap => { const u = getUser(ap.userId); %>
+        <div class="list-row">
+          <div><b><%= u?.name %></b><span><%= ap.status %></span></div>
+          <form method="post" action="/admin/analysis/<%= a.id %>/application/<%= ap.userId %>" class="inline-form">
+            <button name="status" value="APPROVED">Kabul Et</button>
+            <button name="status" value="REJECTED">Reddet</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% }) %>
+</section>
+
+<section class="panel">
+  <h3>Kullanıcı ve Ban Modu</h3>
+  <% db.users.forEach(u => { %>
+    <div class="list-row user-admin-row">
+      <div><b><%= u.avatar %> <%= u.name %></b><span><%= u.email %> · <%= u.role %> · <%= u.status %></span></div>
+      <form method="post" action="/admin/user/<%= u.id %>/role" class="inline-form">
+        <select name="role">
+          <option <%= u.role==='USER'?'selected':'' %>>USER</option>
+          <option <%= u.role==='MODERATOR'?'selected':'' %>>MODERATOR</option>
+          <option <%= u.role==='SUPER_ADMIN'?'selected':'' %>>SUPER_ADMIN</option>
+        </select>
+        <button>Rol Ver</button>
+      </form>
+
+      <% if (u.role === 'MODERATOR') { %>
+        <form method="post" action="/admin/user/<%= u.id %>/moderator-powers" class="inline-form moderator-power">
+          <label><input type="checkbox" name="canApproveAnalysis" <%= u.moderatorCanApprove?'checked':'' %>> Tahlile kişi alabilsin</label>
+          <input name="monthlyAnalysisQuota" value="<%= u.moderatorMonthlyQuota || 0 %>" title="Aylık kota">
+          <input name="usedAnalysisQuota" value="<%= u.moderatorUsedQuota || 0 %>" title="Kullanılan kota">
+          <button>Yetki/Kota Güncelle</button>
+        </form>
+      <% } %>
+      <form method="post" action="/admin/user/<%= u.id %>/mute" class="inline-form">
+        <input name="minutes" value="60">
+        <button>Sessize Al</button>
+      </form>
+      <form method="post" action="/admin/user/<%= u.id %>/ban" class="inline-form">
+        <select name="type"><option>Geçici Ban</option><option>Kalıcı Ban</option><option>IP Ban</option></select>
+        <input name="reason" placeholder="Sebep">
+        <button>Banla</button>
+      </form>
+      <form method="post" action="/admin/user/<%= u.id %>/unban" class="inline-form"><button>Ban Kaldır</button></form>
+    </div>
+  <% }) %>
+</section>
+<%- include('../partials/footer') %>

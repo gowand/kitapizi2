@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  MODERATOR
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  MUTED
+  BANNED
+}
+
+enum QuoteStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AccessType {
+  NORMAL
+  INVITE
+  REWARD
+  TASK_REWARD_SELF_JOIN
+  MODERATOR_INVITE
+}
+
+model User {
+  id                    String   @id @default(cuid())
+  name                  String
+  email                 String   @unique
+  passwordHash          String
+  role                  Role     @default(USER)
+  avatar                String   @default("📚")
+  status                UserStatus @default(ACTIVE)
+  readCount             Int      @default(0)
+  commentCount          Int      @default(0)
+  quoteCount            Int      @default(0)
+  badges                String[] @default([])
+  mutedUntil            DateTime?
+  banType               String?
+  banReason             String?
+  bannedAt              DateTime?
+  moderatorCanApprove   Boolean  @default(false)
+  moderatorMonthlyQuota Int      @default(0)
+  moderatorUsedQuota    Int      @default(0)
+  taskCommentsTarget    Int      @default(10)
+  taskQuotesTarget      Int      @default(5)
+  taskReadsTarget       Int      @default(3)
+  earnedAnalysisAccess  Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  comments              Comment[]
+  quotes                Quote[]
+  applications          AnalysisApplication[]
+  invites               AnalysisInvite[]
+  rewards               AnalysisRewardAccess[]
+  responses             AnalysisResponse[]
+  logs                  AuditLog[] @relation("ActorLogs")
+
+  @@index([role])
+  @@index([status])
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  category    String
+  year        String?
+  pages       String?
+  cover       String?
+  description String?
+  readCount   Int      @default(0)
+  readingCount Int     @default(0)
+  wantCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  comments    Comment[]
+  quotes      Quote[]
+  analyses    Analysis[]
+  pageViews   BookPageView[]
+
+  @@index([title])
+  @@index([author])
+  @@index([category])
+  @@index([isActive])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  status    QuoteStatus @default(APPROVED)
+  bookId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book      Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+  @@index([userId])
+  @@index([status])
+}
+
+model Quote {
+  id             String      @id @default(cuid())
+  text           String
+  likes          Int         @default(0)
+  status         QuoteStatus @default(PENDING)
+  moderationNote String?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  bookId         String
+  userId         String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  book           Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Analysis {
+  id               String   @id @default(cuid())
+  title            String
+  date             String
+  time             String
+  durationPerTable Int      @default(5)
+  totalDuration    Int      @default(25)
+  autoClose        Boolean  @default(true)
+  normalCapacity   Int      @default(20)
+  inviteCapacity   Int      @default(5)
+  rewardCapacity   Int      @default(5)
+  maxCapacity      Int      @default(100)
+  status           String   @default("SCHEDULED")
+  minBadge         String?
+  minComments      Int      @default(0)
+  minReads         Int      @default(0)
+  allowApplications Boolean @default(true)
+  allowInvites     Boolean @default(true)
+  allowRewards     Boolean @default(true)
+  reportPublished  Boolean @default(false)
+  bookId           String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  book             Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  tables           AnalysisTable[]
+  applications     AnalysisApplication[]
+  invites          AnalysisInvite[]
+  rewards          AnalysisRewardAccess[]
+  responses        AnalysisResponse[]
+  pageViews        AnalysisPageView[]
+
+  @@index([bookId])
+  @@index([date, time])
+  @@index([status])
+}
+
+model AnalysisTable {
+  id         String @id @default(cuid())
+  title      String
+  question   String?
+  orderNo    Int
+  analysisId String
+
+  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  responses  AnalysisResponse[]
+
+  @@index([analysisId])
+}
+
+model AnalysisApplication {
+  id          String @id @default(cuid())
+  type        AccessType @default(NORMAL)
+  status      ApplicationStatus @default(PENDING)
+  approvedBy  String?
+  analysisId  String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([analysisId, userId])
+  @@index([status])
+}
+
+model AnalysisInvite {
+  id          String @id @default(cuid())
+  note        String?
+  status      String @default("INVITED")
+  analysisId  String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@index([userId])
+}
+
+model AnalysisRewardAccess {
+  id          String @id @default(cuid())
+  reason      String?
+  status      String @default("ACTIVE")
+  analysisId  String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@index([userId])
+}
+
+model AnalysisResponse {
+  id          String @id @default(cuid())
+  text        String
+  analysisId  String
+  tableId     String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  table       AnalysisTable @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@index([tableId])
+  @@index([userId])
+}
+
+model SiteSetting {
+  id           String @id @default("main")
+  heroTitle    String @default("Her kitap, başka bir hayatın kapısını aralar.")
+  heroSubtitle String @default("Kitapları keşfet, alıntılarını paylaş, tahlil günlerine katıl ve okuma yolculuğunu rozetlerle büyüt.")
+  siteSlogan   String @default("Her kitap, başka bir hayatın kapısını aralar.")
+  defaultTheme String @default("dark")
+  updatedAt    DateTime @updatedAt
+}
+
+model SiteStat {
+  id             String @id @default("main")
+  totalVisits    Int @default(0)
+  todayVisits    Int @default(0)
+  lastVisitDate  String?
+  dailyQuoteId   String?
+  dailyQuoteDate String?
+  updatedAt      DateTime @updatedAt
+}
+
+model BookPageView {
+  id        String @id @default(cuid())
+  bookId    String
+  count     Int @default(0)
+  dateKey   String
+  book      Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, dateKey])
+}
+
+model AnalysisPageView {
+  id         String @id @default(cuid())
+  analysisId String
+  count      Int @default(0)
+  dateKey    String
+  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@unique([analysisId, dateKey])
+}
+
+model AuditLog {
+  id        String @id @default(cuid())
+  text      String
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  actor     User? @relation("ActorLogs", fields: [actorId], references: [id])
+
+  @@index([createdAt])
+}

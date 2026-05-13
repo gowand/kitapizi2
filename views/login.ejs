@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<section class="auth panel">
+  <h2>Üye Girişi</h2>
+  <p class="muted">Bu alan normal üyeler içindir. Admin ve moderatörler yönetim girişini kullanmalıdır.</p>
+  <form method="post" class="stack-form">
+    <input name="email" type="email" placeholder="E-posta" required>
+    <input name="password" type="password" placeholder="Şifre" required>
+    <button>Üye Olarak Giriş Yap</button>
+  </form>
+  <a href="/admin/login">Süper Admin / Moderatör girişi</a>
+  <br>
+  <a href="/register">Hesabın yok mu? Kayıt ol</a>
+</section>
+<%- include('partials/footer') %>
